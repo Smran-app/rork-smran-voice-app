@@ -11,14 +11,29 @@ import {
   Modal,
 } from 'react-native';
 
+interface Device {
+  id: string;
+  name: string;
+  type: 'phone' | 'tablet' | 'watch' | 'desktop';
+}
+
 interface ReminderProfile {
   id: string;
   name: string;
   notifyBefore: number;
   snoozeDuration: number;
   notifyOn: 'all' | 'other';
+  preferredDevices: string[];
   isCustom: boolean;
 }
+
+const MOCK_DEVICES: Device[] = [
+  { id: 'device-1', name: 'iPhone 15 Pro', type: 'phone' },
+  { id: 'device-2', name: 'iPad Air', type: 'tablet' },
+  { id: 'device-3', name: 'Apple Watch', type: 'watch' },
+  { id: 'device-4', name: 'MacBook Pro', type: 'desktop' },
+  { id: 'device-5', name: 'iPhone 13', type: 'phone' },
+];
 
 const PRESET_PROFILES: ReminderProfile[] = [
   {
@@ -27,6 +42,7 @@ const PRESET_PROFILES: ReminderProfile[] = [
     notifyBefore: 15,
     snoozeDuration: 5,
     notifyOn: 'all',
+    preferredDevices: [],
     isCustom: false,
   },
   {
@@ -35,6 +51,7 @@ const PRESET_PROFILES: ReminderProfile[] = [
     notifyBefore: 30,
     snoozeDuration: 10,
     notifyOn: 'all',
+    preferredDevices: [],
     isCustom: false,
   },
   {
@@ -43,6 +60,7 @@ const PRESET_PROFILES: ReminderProfile[] = [
     notifyBefore: 60,
     snoozeDuration: 15,
     notifyOn: 'other',
+    preferredDevices: [],
     isCustom: false,
   },
 ];
@@ -64,10 +82,20 @@ export default function ProfilesScreen() {
       notifyBefore: 30,
       snoozeDuration: 10,
       notifyOn: 'all',
+      preferredDevices: [],
       isCustom: true,
     };
     setEditingProfile(newProfile);
     setModalVisible(true);
+  };
+
+  const toggleDevice = (deviceId: string) => {
+    if (!editingProfile) return;
+    const isSelected = editingProfile.preferredDevices.includes(deviceId);
+    const updated = isSelected
+      ? editingProfile.preferredDevices.filter(id => id !== deviceId)
+      : [...editingProfile.preferredDevices, deviceId];
+    setEditingProfile({ ...editingProfile, preferredDevices: updated });
   };
 
   const handleSaveProfile = () => {
@@ -293,6 +321,41 @@ export default function ProfilesScreen() {
               </View>
             </View>
 
+            <View style={styles.formGroup}>
+              <View style={styles.labelRow}>
+                <Smartphone size={20} color="#6B7280" strokeWidth={2} />
+                <Text style={styles.label}>Preferred Devices</Text>
+              </View>
+              <Text style={styles.helperText}>
+                Select specific devices to receive notifications
+              </Text>
+              <View style={styles.deviceList}>
+                {MOCK_DEVICES.map(device => {
+                  const isSelected = editingProfile?.preferredDevices.includes(
+                    device.id
+                  );
+                  return (
+                    <Pressable
+                      key={device.id}
+                      style={[
+                        styles.deviceOption,
+                        isSelected && styles.deviceOptionSelected,
+                      ]}
+                      onPress={() => toggleDevice(device.id)}
+                    >
+                      <View style={styles.checkbox}>
+                        {isSelected && <View style={styles.checkboxInner} />}
+                      </View>
+                      <Text style={styles.deviceName}>{device.name}</Text>
+                      <Text style={styles.deviceType}>
+                        {device.type.charAt(0).toUpperCase() + device.type.slice(1)}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
             {editingProfile?.isCustom && (
               <Pressable
                 style={styles.deleteButton}
@@ -333,6 +396,8 @@ function ProfileCard({ profile, onPress }: ProfileCardProps) {
           <Smartphone size={14} color="#6B7280" strokeWidth={2} />
           <Text style={styles.detailText}>
             {profile.notifyOn === 'all' ? 'All devices' : 'Other devices'}
+            {profile.preferredDevices.length > 0 &&
+              ` (${profile.preferredDevices.length} preferred)`}
           </Text>
         </View>
       </View>
@@ -594,6 +659,56 @@ const styles = StyleSheet.create({
     fontWeight: '600' as const,
     color: '#EF4444',
     textAlign: 'center' as const,
+    letterSpacing: 0.3,
+  },
+  helperText: {
+    fontSize: 13,
+    color: '#9CA3AF',
+    marginBottom: 12,
+    letterSpacing: 0.2,
+  },
+  deviceList: {
+    gap: 10,
+  },
+  deviceOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.08)',
+    backgroundColor: '#FAFAFA',
+  },
+  deviceOptionSelected: {
+    borderColor: '#60A5FA',
+    backgroundColor: 'rgba(96, 165, 250, 0.05)',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 3,
+    backgroundColor: '#60A5FA',
+  },
+  deviceName: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '500' as const,
+    color: '#1F2937',
+    letterSpacing: 0.2,
+  },
+  deviceType: {
+    fontSize: 12,
+    color: '#9CA3AF',
     letterSpacing: 0.3,
   },
 });
