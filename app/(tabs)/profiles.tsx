@@ -331,7 +331,7 @@ export default function ProfilesScreen() {
               </Text>
               <View style={styles.deviceList}>
                 {MOCK_DEVICES.map(device => {
-                  const isSelected = editingProfile?.preferredDevices.includes(
+                  const isSelected = editingProfile?.preferredDevices?.includes(
                     device.id
                   );
                   return (
@@ -396,7 +396,7 @@ function ProfileCard({ profile, onPress }: ProfileCardProps) {
           <Smartphone size={14} color="#6B7280" strokeWidth={2} />
           <Text style={styles.detailText}>
             {profile.notifyOn === 'all' ? 'All devices' : 'Other devices'}
-            {profile.preferredDevices.length > 0 &&
+            {profile.preferredDevices?.length > 0 &&
               ` (${profile.preferredDevices.length} preferred)`}
           </Text>
         </View>
