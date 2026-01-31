@@ -209,8 +209,9 @@ export default function ProfilesScreen() {
                 <Text style={styles.label}>Profile Name</Text>
                 <TextInput
                   style={styles.input}
-                  value={editingProfile.name}
+                  value={editingProfile?.name ?? ''}
                   onChangeText={text =>
+                    editingProfile &&
                     setEditingProfile({ ...editingProfile, name: text })
                   }
                   placeholder="Enter profile name"
@@ -227,7 +228,7 @@ export default function ProfilesScreen() {
               <View style={styles.inputRow}>
                 <TextInput
                   style={styles.numberInput}
-                  value={editingProfile?.notifyBefore.toString()}
+                  value={editingProfile?.notifyBefore.toString() ?? ''}
                   onChangeText={text =>
                     editingProfile &&
                     setEditingProfile({
@@ -251,7 +252,7 @@ export default function ProfilesScreen() {
               <View style={styles.inputRow}>
                 <TextInput
                   style={styles.numberInput}
-                  value={editingProfile?.snoozeDuration.toString()}
+                  value={editingProfile?.snoozeDuration.toString() ?? ''}
                   onChangeText={text =>
                     editingProfile &&
                     setEditingProfile({
