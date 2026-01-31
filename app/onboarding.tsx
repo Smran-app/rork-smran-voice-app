@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
@@ -79,6 +80,7 @@ const questions = [
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { completeOnboarding } = useOnboarding();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const animValue = useRef(new Animated.Value(0)).current;
@@ -102,7 +104,7 @@ export default function OnboardingScreen() {
       scrollViewRef.current?.scrollTo({ x: width * nextIndex, animated: true });
       setCurrentIndex(nextIndex);
     } else {
-      router.replace('/(tabs)');
+      completeOnboarding();
     }
   };
 

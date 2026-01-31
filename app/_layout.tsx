@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -19,15 +20,29 @@ function RootLayoutNav() {
   );
 }
 
-export default function RootLayout() {
-  useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+function RootContent() {
+  const { isLoading } = useOnboarding();
 
+  useEffect(() => {
+    if (!isLoading) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return null;
+  }
+
+  return <RootLayoutNav />;
+}
+
+export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
-        <RootLayoutNav />
+        <OnboardingProvider>
+          <RootContent />
+        </OnboardingProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );
