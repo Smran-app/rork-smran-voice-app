@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Mic } from "lucide-react-native";
+import { Mic, Settings2 } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
@@ -9,8 +9,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#60A5FA',
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#0A0A0F',
-          borderTopColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: '#FFFFFF',
+          borderTopColor: 'rgba(0, 0, 0, 0.1)',
         },
         tabBarInactiveTintColor: '#6B7280',
       }}
@@ -20,6 +20,13 @@ export default function TabLayout() {
         options={{
           title: "Voice",
           tabBarIcon: ({ color }) => <Mic color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profiles"
+        options={{
+          title: "Profiles",
+          tabBarIcon: ({ color }) => <Settings2 color={color} size={24} />,
         }}
       />
     </Tabs>
